@@ -2,42 +2,26 @@ package com.adidas.productsAPI.dto;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.hateoas.ResourceSupport;
+import org.springframework.hateoas.core.Relation;
 
-
+@Relation(collectionRelation = "products")
 public class ProductDTO extends ResourceSupport{
 
-
-    public String id;
+    @Id
+    public String productId;
     public String name;
     public String size;
     public double price;
 
     public ProductDTO() { }
 
-    public ProductDTO(String id, String name, String size, double price) {
-        this.id = id;
+    public ProductDTO(String name, String size, double price) {
         this.name = name;
         this.size = size;
         this.price = price;
     }
 
-    public String toString() {
-        return ("Id: " + this.id +  " Nombre: " + this.name + ", talla: " + this.size + ", price: " + this.price + "$");
-    }
-
-    public String get_Id(){
-        return this.id;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getSize(){
-        return this.size;
-    }
-
-    public double getPrice(){
-        return this.price;
+    public String getProductId(){
+        return this.productId;
     }
 }
