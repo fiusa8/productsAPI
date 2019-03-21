@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: springboot #TODO: change to the new service name
+  cloud:
+    config:
+      failFast: false  # TODO: change to true once the configuration service is in place and has the needed config files for this API
+      uri: ${CONFIG_SERVER_URI:http://localhost:8888}
+  profiles:
+    active: ${EXEC_ENVIRONMENT:local}

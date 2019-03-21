@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: springboot
+  cloud:
+    config:
+      failFast: false  # if it can't connect to configuration servers the application won't fail this way fails
+      env: default
+      label: ${EXEC_ENVIRONMENT:local} #branch to use for the DEV environment
+      uri: ${CONFIG_SERVER_URI:http://localhost:8888}
