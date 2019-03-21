@@ -7,17 +7,17 @@ import org.springframework.hateoas.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+
 
 @RestController
-@RequestMapping("/")
+@RequestMapping(value = "/products", produces = "application/hal+json")
 
 public class ProductsController {
 
@@ -25,38 +25,44 @@ public class ProductsController {
     @Autowired
     private ProductRepository productRepository;
 
-    @RequestMapping(value = "/products", method = RequestMethod.GET)
-    public ResponseEntity<Object> listOfProducts() {
-        for (ProductDTO productDTO : productRepository.findAll()) {
-            System.out.println(productDTO.toString());
-        }
+    @GetMapping
+    public Resources<ProductDTO> listOfProducts() {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/hal+json");
-        ResourceSupport response = new ResourceSupport();
-        response.add(new Link("/").withRel("create"));
-        //calcular offset
-        response.add(new Link("/?offset=15&limit=5").withRel("self"));
-        response.add(new Link("/?offset=20&limit=5").withRel("next"));
-        response.add(new Link("/?offset=10&limit=5").withRel("prev"));
-        response.add(new Link("/?offset=0&limit=5").withRel("first"));
-        response.add(new Link("/?offset=40&limit=5").withRel("last"));
 
-        ProductDTO p1 = new ProductDTO("Apfelstrudel", "m", 120);
-        ProductDTO p2 = new ProductDTO("Apfelstrudel2", "l", 120);
-        Resource<ProductDTO> r1 = new Resource<>(p1, new Link("http://example.com/products/1"));
-        Resource<ProductDTO> r2 = new Resource<>(p1, new Link("http://example.com/products/1"));
+        List<ProductDTO> allProducts = productRepository.findAll();
+        Link link;
+        for (ProductDTO product : allProducts) {
+            System.out.println(product.get_Id());
+            link = linkTo(ProductRepository.class).slash("products/" + product.get_Id()).withRel("delete");
+            System.out.println(link);
+            product.add(link);
+            link = linkTo(ProductRepository.class).slash("products/" + product.get_Id()).withRel("edit");
+            product.add(link);
+        }
+
         List<Link> linksList = new ArrayList<>();
-        linksList.add(new Link("/?offset=15&limit=5").withRel("self"));
-        linksList.add(new Link("/?offset=15&limit=4").withRel("sel"));
-        linksList.add(new Link("/?offset=15&limit=6").withRel("selfe"));
-        Links links = new Links(linksList);
-        Resources<Resource<ProductDTO>> resources = new Resources(Arrays.asList(r1, r2), links);
-        return new ResponseEntity<>(resources, headers, HttpStatus.OK);
+        linksList.add(linkTo(ProductRepository.class).slash("products").withRel("create"));
+        //calculate offset
+        linksList.add(linkTo(ProductRepository.class).slash("products?offset=15&limit=5").withSelfRel());
+        linksList.add(linkTo(ProductRepository.class).slash("products?offset=10&limit=5").withRel("prev"));
+        linksList.add(linkTo(ProductRepository.class).slash("products?offset=0&limit=5").withRel("first"));
+        linksList.add(linkTo(ProductRepository.class).slash("products?offset=40&limit=5").withRel("last"));
+        Resources<ProductDTO> result = new Resources<>(allProducts, linksList);
+        return result;
     }
 
-    @RequestMapping(value = "/products", method = RequestMethod.POST)
-    public ResponseEntity<Object> createNewProduct() {
-        return new ResponseEntity<>(("Succesful"), HttpStatus.CREATED);
+    @PostMapping(consumes = "application/json")
+    public ResponseEntity<Object> createNewProduct(@RequestBody ProductDTO product) {
+        System.out.println(product);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/hal+json");
+
+        ProductDTO productDTO = productRepository.save(product);
+        System.out.println(productDTO);
+        productDTO.add(new Link("/products/" + productDTO.get_Id()).withRel("edit"));
+        productDTO.add(new Link("/products/" + productDTO.get_Id()).withRel("delete"));
+        return new ResponseEntity<>(productDTO, headers, HttpStatus.CREATED);
     }
 
 }
