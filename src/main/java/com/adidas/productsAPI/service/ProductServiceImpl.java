@@ -26,18 +26,18 @@ public class ProductServiceImpl implements ProductService{
     }
 
     @Override
-    public void deleteByProductId(ProductDTO product){
-        productRepository.delete(product);
+    public void deleteByProductId(String productId){
+        productRepository.deleteById(productId);
     }
 
     @Override
-    public void updateProduct(ProductDTO e){
-        productRepository.save(e);
+    public void updateProduct(ProductDTO product){
+        productRepository.save(product);
     }
 
     @Override
-    public boolean ProductExists(ProductDTO e){
-        return productRepository.exists(Example.of(e));
+    public boolean ProductExists(ProductDTO product){
+        return productRepository.exists(Example.of(product));
     }
 
     @Override

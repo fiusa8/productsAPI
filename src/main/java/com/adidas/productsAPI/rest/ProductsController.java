@@ -2,6 +2,7 @@ package com.adidas.productsAPI.rest;
 
 import com.adidas.productsAPI.dto.ProductDTO;
 import com.adidas.productsAPI.mapper.ProductRepository;
+import com.adidas.productsAPI.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.*;
 import org.springframework.http.HttpEntity;
@@ -25,29 +26,38 @@ public class ProductsController {
 
 
     @Autowired
-    private ProductRepository productRepository;
+    private ProductService productService;
 
     @GetMapping
     public Resources<ProductDTO> listOfProducts() {
-        //HttpHeaders headers = new HttpHeaders();
-        //headers.add("Content-Type", "application/hal+json");
-
-        List<ProductDTO> allProducts = productRepository.findAll();
+        List<ProductDTO> allProducts = productService.findAll();
         Link link;
         for (ProductDTO product : allProducts) {
-            link = linkTo(ProductRepository.class).slash("products/" + product.getProductId()).withRel("delete");
+            link = linkTo(ProductRepository.class)
+                    .slash("products/" + product.getProductId())
+                    .withRel("delete");
             product.add(link);
-            link = linkTo(ProductRepository.class).slash("products/" + product.getProductId()).withRel("edit");
+            link = linkTo(ProductRepository.class)
+                    .slash("products/" + product.getProductId())
+                    .withRel("edit");
             product.add(link);
         }
 
         List<Link> linksList = new ArrayList<>();
         linksList.add(linkTo(ProductRepository.class).slash("products").withRel("create"));
         //calculate offset
-        linksList.add(linkTo(ProductRepository.class).slash("products?offset=15&limit=5").withSelfRel());
-        linksList.add(linkTo(ProductRepository.class).slash("products?offset=10&limit=5").withRel("prev"));
-        linksList.add(linkTo(ProductRepository.class).slash("products?offset=0&limit=5").withRel("first"));
-        linksList.add(linkTo(ProductRepository.class).slash("products?offset=40&limit=5").withRel("last"));
+        linksList.add(linkTo(ProductRepository.class)
+                .slash("products?offset=15&limit=5")
+                .withSelfRel());
+        linksList.add(linkTo(ProductRepository.class)
+                .slash("products?offset=10&limit=5")
+                .withRel("prev"));
+        linksList.add(linkTo(ProductRepository.class)
+                .slash("products?offset=0&limit=5")
+                .withRel("first"));
+        linksList.add(linkTo(ProductRepository.class)
+                .slash("products?offset=40&limit=5")
+                .withRel("last"));
         Resources<ProductDTO> result = new Resources<>(allProducts, linksList);
         return result;
     }
@@ -57,7 +67,7 @@ public class ProductsController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/hal+json");
 
-        ProductDTO productDTO = productRepository.save(product);
+        ProductDTO productDTO = productService.saveProduct(product);
         productDTO.add(new Link("/products/" + productDTO.getProductId()).withRel("edit"));
         productDTO.add(new Link("/products/" + productDTO.getProductId()).withRel("delete"));
         return new ResponseEntity<>(productDTO, headers, HttpStatus.CREATED);
@@ -65,25 +75,50 @@ public class ProductsController {
 
     @RequestMapping(value = "/{product_id}", method = RequestMethod.GET)
     public HttpEntity<ProductDTO> getProductById(@PathVariable("product_id") String productId) {
-        Optional<ProductDTO> productDTO = productRepository.findById(productId);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/hal+json");
+
+        Optional<ProductDTO> productDTO = productService.findByProductId(productId);
         if (!productDTO.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             ProductDTO product = productDTO.get();
-            product.add(linkTo(methodOn(ProductsController.class).getProductById(product.getProductId())).withRel("edit"));
-            product.add(linkTo(methodOn(ProductsController.class).getProductById(product.getProductId())).withRel("delete"));
-            return new ResponseEntity<>(product, HttpStatus.OK);
+            product.add(linkTo(methodOn(ProductsController.class)
+                    .getProductById(product.getProductId())).withRel("edit"));
+            product.add(linkTo(methodOn(ProductsController.class)
+                    .getProductById(product.getProductId())).withRel("delete"));
+            return new ResponseEntity<>(product, headers, HttpStatus.OK);
         }
     }
 
     @RequestMapping(value = "/{product_id}", method = RequestMethod.PATCH)
-    public HttpEntity<ProductDTO> updateProduct(@PathVariable("product_id") String productId) {
-        return new ResponseEntity<>(null, HttpStatus.OK);
+    public HttpEntity<ProductDTO> updateProduct(@PathVariable("product_id") String productId,
+                                                @RequestBody ProductDTO productBody) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/hal+json");
+
+        Optional<ProductDTO> productDTO = productService.findByProductId(productId);
+        if(!productDTO.isPresent()){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            ProductDTO product = productDTO.get();
+            product.setName(productBody.getName());
+            product.setSize(productBody.getSize());
+            product.setPrice(productBody.getPrice());
+            productService.updateProduct(product);
+            product.add(linkTo(methodOn(ProductsController.class)
+                    .getProductById(product.getProductId())).withSelfRel());
+            return new ResponseEntity<>(product, headers, HttpStatus.OK);
+        }
     }
 
     @RequestMapping(value = "/{product_id}", method = RequestMethod.DELETE)
     public HttpEntity<ProductDTO> getDeleteProduct(@PathVariable("product_id") String productId) {
-        return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/hal+json");
+
+        productService.deleteByProductId(productId);
+        return new ResponseEntity<>(null, headers, HttpStatus.NO_CONTENT);
     }
 
 }

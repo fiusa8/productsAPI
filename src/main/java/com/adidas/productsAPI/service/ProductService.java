@@ -7,15 +7,15 @@ import java.util.Optional;
 
 
 public interface ProductService {
-    ProductDTO saveProduct(ProductDTO e);
+    ProductDTO saveProduct(ProductDTO product);
 
     Optional<ProductDTO> findByProductId(String productId);
 
-    void deleteByProductId(ProductDTO productId);
+    void deleteByProductId(String productId);
 
-    void updateProduct(ProductDTO e);
+    void updateProduct(ProductDTO product);
 
-    boolean ProductExists(ProductDTO e);
+    boolean ProductExists(ProductDTO product);
 
     List<ProductDTO> findAll();
 }
