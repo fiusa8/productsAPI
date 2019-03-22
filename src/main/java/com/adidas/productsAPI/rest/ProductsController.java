@@ -1,7 +1,6 @@
 package com.adidas.productsAPI.rest;
 
 import com.adidas.productsAPI.dto.ProductDTO;
-import com.adidas.productsAPI.mapper.ProductRepository;
 import com.adidas.productsAPI.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.*;
@@ -31,33 +30,19 @@ public class ProductsController {
     @GetMapping
     public Resources<ProductDTO> listOfProducts() {
         List<ProductDTO> allProducts = productService.findAll();
-        Link link;
         for (ProductDTO product : allProducts) {
-            link = linkTo(ProductRepository.class)
-                    .slash("products/" + product.getProductId())
-                    .withRel("delete");
-            product.add(link);
-            link = linkTo(ProductRepository.class)
-                    .slash("products/" + product.getProductId())
-                    .withRel("edit");
-            product.add(link);
+            product.add(new Link("/" + product.getProductId()).withRel("delete"));
+            product.add(new Link("/" + product.getProductId()).withRel("edit"));
         }
 
         List<Link> linksList = new ArrayList<>();
-        linksList.add(linkTo(ProductRepository.class).slash("products").withRel("create"));
+        linksList.add(new Link("/").withRel("create"));
         //calculate offset
-        linksList.add(linkTo(ProductRepository.class)
-                .slash("products?offset=15&limit=5")
-                .withSelfRel());
-        linksList.add(linkTo(ProductRepository.class)
-                .slash("products?offset=10&limit=5")
-                .withRel("prev"));
-        linksList.add(linkTo(ProductRepository.class)
-                .slash("products?offset=0&limit=5")
-                .withRel("first"));
-        linksList.add(linkTo(ProductRepository.class)
-                .slash("products?offset=40&limit=5")
-                .withRel("last"));
+        linksList.add(new Link("/?offset=15&limit=5").withSelfRel());
+        linksList.add(new Link("/?offset=20&limit=5").withRel("next"));
+        linksList.add(new Link("/?offset=10&limit=5").withRel("prev"));
+        linksList.add(new Link("/?offset=0&limit=5").withRel("first"));
+        linksList.add(new Link("/?offset=40&limit=5").withRel("last"));
         Resources<ProductDTO> result = new Resources<>(allProducts, linksList);
         return result;
     }
@@ -68,8 +53,8 @@ public class ProductsController {
         headers.add("Content-Type", "application/hal+json");
 
         ProductDTO productDTO = productService.saveProduct(product);
-        productDTO.add(new Link("/products/" + productDTO.getProductId()).withRel("edit"));
-        productDTO.add(new Link("/products/" + productDTO.getProductId()).withRel("delete"));
+        productDTO.add(new Link("/" + productDTO.getProductId()).withRel("edit"));
+        productDTO.add(new Link("/" + productDTO.getProductId()).withRel("delete"));
         return new ResponseEntity<>(productDTO, headers, HttpStatus.CREATED);
     }
 
@@ -83,10 +68,8 @@ public class ProductsController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             ProductDTO product = productDTO.get();
-            product.add(linkTo(methodOn(ProductsController.class)
-                    .getProductById(product.getProductId())).withRel("edit"));
-            product.add(linkTo(methodOn(ProductsController.class)
-                    .getProductById(product.getProductId())).withRel("delete"));
+            product.add(new Link("/" + product.getProductId()).withRel("delete"));
+            product.add(new Link("/" + product.getProductId()).withRel("edit"));
             return new ResponseEntity<>(product, headers, HttpStatus.OK);
         }
     }
@@ -106,8 +89,8 @@ public class ProductsController {
             product.setSize(productBody.getSize());
             product.setPrice(productBody.getPrice());
             productService.updateProduct(product);
-            product.add(linkTo(methodOn(ProductsController.class)
-                    .getProductById(product.getProductId())).withSelfRel());
+            product.add(new Link("/" + product.getProductId()).withRel("delete"));
+            product.add(new Link("/" + product.getProductId()).withRel("edit"));
             return new ResponseEntity<>(product, headers, HttpStatus.OK);
         }
     }
