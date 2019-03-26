@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ConnectorConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">productsAPI-archetype</a> &gt; <a href="index.source.html" class="el_package">com.adidas.productsAPI.config</a> &gt; <span class="el_source">ConnectorConfig.java</span></div><h1>ConnectorConfig.java</h1><pre class="source lang-java linenums">package com.adidas.productsAPI.config;
+
+import org.apache.catalina.Context;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.servlet.server.ServletWebServerFactory;
+
+@Configuration
+<span class="fc" id="L14">public class ConnectorConfig {</span>
+
+    @Bean
+    public ServletWebServerFactory servletContainer() {
+<span class="fc" id="L18">        TomcatServletWebServerFactory tomcat =</span>
+<span class="fc" id="L19">                new TomcatServletWebServerFactory() {</span>
+                    @Override
+                    protected void postProcessContext(Context context) {
+<span class="nc" id="L22">                        SecurityConstraint securityConstraint = new SecurityConstraint();</span>
+<span class="nc" id="L23">                        securityConstraint.setUserConstraint(&quot;CONFIDENTIAL&quot;);</span>
+<span class="nc" id="L24">                        SecurityCollection collection = new SecurityCollection();</span>
+<span class="nc" id="L25">                        collection.addPattern(&quot;/*&quot;);</span>
+<span class="nc" id="L26">                        securityConstraint.addCollection(collection);</span>
+<span class="nc" id="L27">                        context.addConstraint(securityConstraint);</span>
+<span class="nc" id="L28">                    }</span>
+                };
+<span class="fc" id="L30">        tomcat.addAdditionalTomcatConnectors(redirectConnector());</span>
+<span class="fc" id="L31">        return tomcat;</span>
+    }
+
+    private Connector redirectConnector() {
+<span class="fc" id="L35">        Connector connector = new Connector(&quot;org.apache.coyote.http11.Http11NioProtocol&quot;);</span>
+<span class="fc" id="L36">        connector.setScheme(&quot;http&quot;);</span>
+<span class="fc" id="L37">        connector.setPort(8080);</span>
+<span class="fc" id="L38">        connector.setSecure(false);</span>
+<span class="fc" id="L39">        connector.setRedirectPort(8443);</span>
+<span class="fc" id="L40">        return connector;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

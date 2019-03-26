@@ -1,0 +1,17 @@
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/Application.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/config/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/dto/ProductDTO.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/service/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/rest/RootController.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/config/SwaggerConfiguration.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/mapper/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/service/ProductServiceImpl.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/config/ConnectorConfig.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/common/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/mapper/ProductRepository.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/rest/vo/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/service/ProductService.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/rest/ProductsController.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/dto/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/rest/hateoas/package-info.java
+/Users/fustedav/Desktop/productsAPI/src/main/java/com/adidas/productsAPI/rest/package-info.java

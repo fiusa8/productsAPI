@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SwaggerConfiguration.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">productsAPI-archetype</a> &gt; <a href="index.source.html" class="el_package">com.adidas.productsAPI.config</a> &gt; <span class="el_source">SwaggerConfiguration.java</span></div><h1>SwaggerConfiguration.java</h1><pre class="source lang-java linenums">package com.adidas.productsAPI.config;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.ParameterBuilder;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.schema.ModelRef;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+import java.util.Collections;
+
+/**
+ * Created by alzorign on 21/12/2017.
+ */
+@Configuration
+@EnableSwagger2
+@PropertySource(&quot;classpath:application.properties&quot;)
+<span class="fc" id="L25">public class SwaggerConfiguration {</span>
+
+	@Value(&quot;${application.version}&quot;)
+	private String apiVersion;
+
+	@Value(&quot;${application.name}&quot;)
+	private String apiName;
+
+	@Value(&quot;${application.description}&quot;)
+	private String apiDescription;
+
+	private static final String GROUP_NAME = &quot;productsAPI&quot;;
+	private static final String BASE_PACKAGE = &quot;com.adidas.productsAPI&quot;;
+	private static final String CONTACT = &quot;&quot;; // @TODO
+
+	@Bean
+	public Docket newsApi() {
+<span class="fc" id="L42">		return new Docket(DocumentationType.SWAGGER_2)</span>
+				//uncimment lines below to add to the swagger-ui the possibility of adding the auth header directly from hte swagger-ui
+				//.globalOperationParameters(
+				//		Collections.singletonList(new ParameterBuilder().name(&quot;Authorization&quot;).description(&quot;Authorization header&quot;)
+				//				.modelRef(new ModelRef(&quot;string&quot;)).parameterType(&quot;header&quot;).required(true).build()))
+<span class="fc" id="L47">				.groupName(GROUP_NAME)</span>
+<span class="fc" id="L48">				.apiInfo(apiInfo())</span>
+<span class="fc" id="L49">				.select()</span>
+<span class="fc" id="L50">				.apis(RequestHandlerSelectors.basePackage(BASE_PACKAGE))</span>
+<span class="fc" id="L51">				.paths(PathSelectors.any())</span>
+<span class="fc" id="L52">				.build();</span>
+	}
+
+	private ApiInfo apiInfo() {
+<span class="fc" id="L56">		System.out.println(&quot;****&quot; + apiDescription);</span>
+<span class="fc" id="L57">		return new ApiInfoBuilder()</span>
+<span class="fc" id="L58">				.title(apiVersion)</span>
+<span class="fc" id="L59">				.description(apiDescription)</span>
+<span class="fc" id="L60">				.version(apiVersion)</span>
+<span class="fc" id="L61">				.contact(CONTACT)</span>
+<span class="fc" id="L62">				.build();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

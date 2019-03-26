@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ProductServiceImpl.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">productsAPI-archetype</a> &gt; <a href="index.source.html" class="el_package">com.adidas.productsAPI.service</a> &gt; <span class="el_source">ProductServiceImpl.java</span></div><h1>ProductServiceImpl.java</h1><pre class="source lang-java linenums">package com.adidas.productsAPI.service;
+
+import com.adidas.productsAPI.dto.ProductDTO;
+import com.adidas.productsAPI.mapper.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+<span class="fc" id="L13">public class ProductServiceImpl implements ProductService{</span>
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Override
+    public ProductDTO saveProduct(ProductDTO product){
+<span class="nc" id="L20">        return productRepository.save(product);</span>
+    }
+
+    @Override
+    public Optional&lt;ProductDTO&gt; findByProductId(String productId){
+<span class="nc" id="L25">        return productRepository.findById(productId);</span>
+    }
+
+    @Override
+    public void deleteByProductId(String productId){
+<span class="nc" id="L30">        productRepository.deleteById(productId);</span>
+<span class="nc" id="L31">    }</span>
+
+    @Override
+    public void updateProduct(ProductDTO product){
+<span class="nc" id="L35">        productRepository.save(product);</span>
+<span class="nc" id="L36">    }</span>
+
+    @Override
+    public boolean ProductExists(ProductDTO product){
+<span class="nc" id="L40">        return productRepository.exists(Example.of(product));</span>
+    }
+
+    @Override
+    public List&lt;ProductDTO&gt; findAll() {
+<span class="nc" id="L45">        return productRepository.findAll();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
