@@ -22,7 +22,7 @@ public class RootController {
 
         ResourceSupport response = new ResourceSupport();
         response.add(new Link("/"));
-        response.add(new Link("/pro").withRel("products"));
+        response.add(new Link("/products").withRel("products"));
 
         return new ResponseEntity<>(response, headers, HttpStatus.OK);
     }

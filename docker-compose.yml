@@ -6,12 +6,12 @@ services:
     ports:
       - 27017:27017
     command: --smallfiles
-  app:
-    image: spring
+  springboot:
+    image: springboot
     ports:
       - 8080:8080
       - 443:8443
     links:
       - mongodb
-    volumes:
-      - .:/code  # <--  THIS line enables hot code reloading!
+   # volumes:
+    #  - .:/code  # <--  THIS line enables hot code reloading!

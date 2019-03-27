@@ -3,15 +3,17 @@
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfiguration;
+import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration;
 
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {MongoAutoConfiguration.class, MongoDataAutoConfiguration.class})
 @EnableAutoConfiguration
 
-<span class="fc" id="L11">public class Application {</span>
+<span class="fc" id="L13">public class Application {</span>
 
 	public static void main(String[] args) {
-<span class="nc" id="L14">		SpringApplication.run(Application.class, args);</span>
-<span class="nc" id="L15">	}</span>
+<span class="nc" id="L16">		SpringApplication.run(Application.class, args);</span>
+<span class="nc" id="L17">	}</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
