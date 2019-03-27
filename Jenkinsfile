@@ -3,8 +3,8 @@
 // pipeline config
 def javaAgent ='build && java'
 def dockerAgent ='build && docker'
-def kubectlAgent ='deploy && datacenter && linux'
-def nodejsAgent ='build && nodejs'
+//def kubectlAgent ='deploy && datacenter && linux'
+//def nodejsAgent ='build && nodejs'
 
 // project config
 // TODO: Provide the final project name as well as "trunk" branch to use and the environment tag for develop
@@ -19,7 +19,7 @@ def repo
 
 // git config
 //TODO: Change for the credentials ID that will give access to the repo
-def gitCredentials = 'git-access'
+//def gitCredentials = 'git-access'
 
 // docker config
 // TODO: update the details for the Docker registry to use and the credentials ID defined in Jenkins that will provide access to it

@@ -13,6 +13,6 @@ COPY ${DEPENDENCY}/BOOT-INF/lib /app/lib
 COPY ${DEPENDENCY}/META-INF /app/META-INF
 COPY ${DEPENDENCY}/BOOT-INF/classes /app
 
-EXPOSE 8080
+EXPOSE 8888
 
 ENTRYPOINT ["java", "-Dspring.data.mongodb.uri=mongodb://mongodb:27017/test", "-jar", "application.jar"]
