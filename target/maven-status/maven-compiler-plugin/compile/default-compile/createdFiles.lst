@@ -3,8 +3,6 @@ com/adidas/productsAPI/config/SwaggerConfiguration.class
 com/adidas/productsAPI/rest/ProductsController.class
 com/adidas/productsAPI/service/ProductService.class
 com/adidas/productsAPI/mapper/ProductRepository.class
-com/adidas/productsAPI/config/ConnectorConfig.class
 com/adidas/productsAPI/dto/ProductDTO.class
 com/adidas/productsAPI/service/ProductServiceImpl.class
 com/adidas/productsAPI/rest/RootController.class
-com/adidas/productsAPI/config/ConnectorConfig$1.class
