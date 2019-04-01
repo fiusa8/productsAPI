@@ -105,10 +105,6 @@ node(javaAgent) {
             ])
     ])*/
 
-    agent {
-        label 'docker' 
-      }
-
     try {
         stage('Collect info') {
             checkout scm
@@ -166,12 +162,10 @@ node(javaAgent) {
         }*/
 
         stage('Dockerize') {
-            agent {
-                docker {
-                    untash 'workspace'
-                    sh 'make dockerize'
-                    sh 'make run'
-                }
+            node(dockerAgent){
+                untash 'workspace'
+                sh 'make dockerize'
+                sh 'make run'
             }
         }
 
