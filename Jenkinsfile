@@ -63,14 +63,6 @@ node (javaAgent){
   try{
     stage('checkout project'){
         checkout scm
-        branch = env.BRANCH_NAME
-        commit = gitUtils.getCommitId()
-        repo = gitUtils.getOriginUrl()
-        if (branch == "${mainDevelopBranch}") {
-            simplifiedBranchName = branch
-        } else {
-            simplifiedBranchName = gitUtils.getSimplifiedBranchName()
-        }
     }
 
     stage('check env'){
