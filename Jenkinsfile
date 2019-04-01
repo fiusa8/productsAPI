@@ -87,6 +87,6 @@ node (javaAgent){
     }
 
   }catch(e){
-    throw e;
+    throw e
   }
 }
