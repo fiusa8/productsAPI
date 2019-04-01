@@ -165,7 +165,6 @@ node(javaAgent) {
             node(dockerAgent){
                 unstash 'workspace'
                 sh 'make dockerize'
-                sh 'make run'
             }
         }
 
