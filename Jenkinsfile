@@ -259,3 +259,4 @@ node(javaAgent) {
         currentBuild.result = 'FAILURE'
         */
     }
+}
