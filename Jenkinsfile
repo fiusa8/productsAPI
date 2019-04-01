@@ -57,7 +57,7 @@ def daysToKeepStr = '2'
 def numToKeepStr = '2'
 
 
-//@Library(['global-jenkins-library']) _
+@Library(['global-jenkins-library']) _
 
 /*node (javaAgent){
   try{
