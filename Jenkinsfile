@@ -105,6 +105,10 @@ node(javaAgent) {
             ])
     ])*/
 
+    agent {
+        label 'docker' 
+      }
+
     try {
         stage('Collect info') {
             checkout scm
@@ -140,7 +144,7 @@ node(javaAgent) {
                 //Ignored. Last Jenkins version has a bug that makes the Artifactory publish stage to fail with a exception
                 // when the process works correctly so needs to be captured here while the bug is not solved.
             }
-            //stash 'workspace'
+            stash 'workspace'
         }
 
         /*stage('Sonar') {
@@ -162,8 +166,11 @@ node(javaAgent) {
         }*/
 
         stage('Dockerize') {
-            node(dockerAgent) {
-                docker.build("springboot:${env.BUILD_ID}").push()
+            agent {
+                docker {
+                    untash 'workspace'
+                    docker.build("springboot:${env.BUILD_ID}").push()
+                }
             }
         }
 
