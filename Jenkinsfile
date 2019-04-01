@@ -169,7 +169,8 @@ node(javaAgent) {
             agent {
                 docker {
                     untash 'workspace'
-                    docker.build("springboot:${env.BUILD_ID}").push()
+                    sh 'make dockerize'
+                    sh 'make run'
                 }
             }
         }
