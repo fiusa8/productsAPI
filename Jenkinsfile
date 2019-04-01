@@ -123,11 +123,14 @@ node(javaAgent) {
             //bitbucketUtils.notify message: "Collect info", commit: commit, status: 'progress', credentials: gitCredentials
         }
 
+        stage('Automated Tests') {
+            sh "mvn test"
+        }
+
         stage('Build') {
             //bitbucketUtils.notify message: "Build", commit: commit, status: 'progress', credentials: gitCredentials
             try {
-                sh "mvn compile"
-                sh "mvn package"
+                sh "mvn clean package"
                 /*artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
                         //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
                         //releaseRepo: releaseRepo,
@@ -158,6 +161,12 @@ node(javaAgent) {
             }
         }*/
 
+        stage('Dockerize') {
+            node(dockerAgent) {
+                docker.build("springboot:${env.BUILD_ID}").push()
+            }
+        }
+
         /*stage('Deploy-k8s') {
             bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
             node(kubectlAgent) {
@@ -183,16 +192,12 @@ node(javaAgent) {
             }
         }*/
 
-        stage("API Validation") {
+        /*stage("API Validation") {
             //TODO: Placeholder for the API validation step
             echo "Placeholder for the API validation step"
-        }
+        }*/
 
-        stage('Automated Tests') {
-            //TODO: Placeholder for the Automated test step
-            echo "Placeholder for automation test execution"
-            sh "mvn test"
-        }
+        
 
         //If the test has been successful we will re-tag the image as :develop
         /*if (branch == mainDevelopBranch) {
