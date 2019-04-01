@@ -140,6 +140,7 @@ node(javaAgent) {
                 //Ignored. Last Jenkins version has a bug that makes the Artifactory publish stage to fail with a exception
                 // when the process works correctly so needs to be captured here while the bug is not solved.
             }
+            stash 'workspace'
         }
 
         /*stage('Sonar') {
