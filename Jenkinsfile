@@ -163,7 +163,7 @@ node(javaAgent) {
 
         stage('Dockerize') {
             node(dockerAgent){
-                untash 'workspace'
+                unstash 'workspace'
                 sh 'make dockerize'
                 sh 'make run'
             }
