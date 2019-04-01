@@ -94,7 +94,7 @@ node(javaAgent) {
             //bitbucketUtils.notify message: "Build", commit: commit, status: 'progress', credentials: gitCredentials
             try {
                 artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
-                        goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
+                        //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
                         //releaseRepo: releaseRepo,
                         //snapshotRepo: snapshotRepo,
                         mavenTool: 'maven'
