@@ -114,6 +114,7 @@ pipeline {
 
                     branch = env.BRANCH_NAME
                     commit = gitUtils.getCommitId()
+                }
             }
         }
 
