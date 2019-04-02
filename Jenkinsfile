@@ -94,7 +94,7 @@ def numToKeepStr = '2'
 
 // pipeline
 pipeline {
-    //agent { node { label "incubation" } }
+    agent { node { label javaAgent } }
 
     options { skipDefaultCheckout true }
 
