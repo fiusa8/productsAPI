@@ -107,16 +107,16 @@ node(javaAgent) {
 
     try {
         stage('Collect info') {
-            checkout scm
+            checkout slackTeam
 
-            branch = env.BRANCH_NAME
+            //branch = env.BRANCH_NAME
             commit = gitUtils.getCommitId()
             repo = gitUtils.getOriginUrl()
-            if (branch == "${mainDevelopBranch}") {
+            /*if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
             } else {
                 simplifiedBranchName = gitUtils.getSimplifiedBranchName()
-            }
+            }*/
 
 
             //slackUtils.notify message: "Building ${projectName} - ${branch}...", credentials: slackCredentials, team: slackTeam, channel: slackChannel
@@ -260,7 +260,8 @@ node(javaAgent) {
         }
         slackUtils.notify message: "Build success!", credentials: slackCredentials, team: slackTeam, channel: slackChannel, level: 'error'
         bitbucketUtils.notify commit: commit, status: 'error', credentials: gitCredentials
-        currentBuild.result = 'FAILURE'
         */
+        currentBuild.result = 'FAILURE'
+        
     }
 }
