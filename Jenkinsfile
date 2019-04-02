@@ -106,7 +106,7 @@ node(javaAgent) {
     ])
 
     try {
-        stage('Collect info') {
+        stage('Checkout') {
             checkout scm
 
             branch = env.BRANCH_NAME
