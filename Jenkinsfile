@@ -110,7 +110,7 @@ node(javaAgent) {
             checkout scm
 
             branch = env.BRANCH_NAME
-            //commit = gitUtils.getCommitId()
+            commit = gitUtils.getCommitId()
             //repo = gitUtils.getOriginUrl()
             /*if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
