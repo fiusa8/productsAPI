@@ -19,7 +19,7 @@ def repo
 
 // git config
 //TODO: Change for the credentials ID that will give access to the repo
-//def gitCredentials = 'git-access'
+def gitCredentials = ''
 
 // docker config
 // TODO: update the details for the Docker registry to use and the credentials ID defined in Jenkins that will provide access to it
@@ -261,6 +261,7 @@ node(javaAgent) {
         slackUtils.notify message: "Build success!", credentials: slackCredentials, team: slackTeam, channel: slackChannel, level: 'error'
         bitbucketUtils.notify commit: commit, status: 'error', credentials: gitCredentials
         */
+        sh "echo e"
         currentBuild.result = 'FAILURE'
         
     }
