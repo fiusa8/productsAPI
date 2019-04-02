@@ -110,7 +110,7 @@ node(javaAgent) {
             checkout scm
 
             branch = env.BRANCH_NAME
-            commit = gitUtils.getCommitId()
+            //commit = gitUtils.getCommitId()
             //repo = gitUtils.getOriginUrl()
             /*if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
@@ -150,21 +150,21 @@ node(javaAgent) {
 
         }*/
 
-        /*stage('Dockerize') {
+        stage('Dockerize') {
             node(dockerAgent){
                 unstash 'workspace'
                 sh 'make dockerize'
             }
-        }*/
+        }
 
-        stage('Dockerize') {
+        /*stage('Dockerize') {
             //bitbucketUtils.notify message: "Dockerize", commit: commit, status: 'progress', credentials: gitCredentials
             node(dockerAgent) {
                 unstash 'workspace'
                 dockerUtils.buildAndPush 
                         image: "${imagePrefix}/${projectName}:${commit}"
             }
-        }
+        }*/
 
         /*stage('Deploy-k8s') {
             bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
