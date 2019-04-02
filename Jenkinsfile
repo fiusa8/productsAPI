@@ -94,7 +94,7 @@ def numToKeepStr = '2'
 
 // pipeline
 node(javaAgent) {
-    /*properties([
+    properties([
             [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: artifactDaysToKeepStr, artifactNumToKeepStr: artifactNumToKeepStr, daysToKeepStr: daysToKeepStr, numToKeepStr: numToKeepStr]],
             parameters([
                     booleanParam(
@@ -103,14 +103,14 @@ node(javaAgent) {
                             name: 'destroyEnvironmentAfter'
                     )
             ])
-    ])*/
+    ])
 
     try {
         stage('Collect info') {
             checkout scm
 
             branch = env.BRANCH_NAME
-            commit = gitUtils.getCommitId(true, "HEAD")
+            commit = gitUtils.getCommitId()
             //repo = gitUtils.getOriginUrl()
             /*if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
