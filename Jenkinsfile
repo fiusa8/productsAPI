@@ -261,7 +261,7 @@ node(javaAgent) {
         slackUtils.notify message: "Build success!", credentials: slackCredentials, team: slackTeam, channel: slackChannel, level: 'error'
         bitbucketUtils.notify commit: commit, status: 'error', credentials: gitCredentials
         */
-        sh "echo e"
+        echo e
         currentBuild.result = 'FAILURE'
         
     }
