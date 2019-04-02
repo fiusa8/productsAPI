@@ -138,21 +138,27 @@ pipeline {
 
         stage('Automated Tests') {
             //sh "mvn test"
-            mvnUtils.run goal: 'test'
+            steps {
+                script {
+                    mvnUtils.run goal: 'test'
+                }
+            }
         }
 
         stage('Build') {
             //bitbucketUtils.notify message: "Build", commit: commit, status: 'progress', credentials: gitCredentials
 
             //sh "mvn clean package"
-            mvnUtils.run goal: 'clean package'
             /*artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
                     //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
                     //releaseRepo: releaseRepo,
                     //snapshotRepo: snapshotRepo,
                     mavenTool: 'maven'*/
-
-            stash 'workspace'
+            steps {
+                script {
+                    mvnUtils.run goal: 'clean package'
+                }
+            }
         }
 
         /*stage('Sonar') {
@@ -162,12 +168,12 @@ pipeline {
 
         }*/
 
-        stage('Dockerize') {
+        /*stage('Dockerize') {
             node(dockerAgent){
                 unstash 'workspace'
                 sh 'make dockerize'
             }
-        }
+        }*/
 
         /*stage('Dockerize') {
             //bitbucketUtils.notify message: "Dockerize", commit: commit, status: 'progress', credentials: gitCredentials
