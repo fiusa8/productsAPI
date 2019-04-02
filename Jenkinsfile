@@ -185,7 +185,7 @@ pipeline {
         }*/
 
         stage('Dockerize') {
-            agent { node { dockerAgent } }
+            agent { node { label dockerAgent } }
 
             steps{
                 script {
