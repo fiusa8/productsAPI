@@ -8,7 +8,7 @@ def dockerAgent ='build && docker'
 
 // project config
 // TODO: Provide the final project name as well as "trunk" branch to use and the environment tag for develop
-def projectName = 'productsAPI-archetype'
+def projectName = 'productsAPI'
 def mainDevelopBranch = 'master'
 def developEnvTag = 'master'
 def version = '1.0'
@@ -109,14 +109,14 @@ node(javaAgent) {
         stage('Collect info') {
             checkout scm
 
-            /*branch = env.BRANCH_NAME
+            /branch = env.BRANCH_NAME
             commit = gitUtils.getCommitId()
             repo = gitUtils.getOriginUrl()
             if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
             } else {
                 simplifiedBranchName = gitUtils.getSimplifiedBranchName()
-            }*/
+            }
 
 
             //slackUtils.notify message: "Building ${projectName} - ${branch}...", credentials: slackCredentials, team: slackTeam, channel: slackChannel
@@ -150,21 +150,19 @@ node(javaAgent) {
 
         }*/
 
-
         /*stage('Dockerize') {
-            //bitbucketUtils.notify message: "Dockerize", commit: commit, status: 'progress', credentials: gitCredentials
-            node(dockerAgent) {
+            node(dockerAgent){
                 unstash 'workspace'
-                dockerUtils.buildAndPush repo: dockerRepo,
-                        image: "${imagePrefix}/${projectName}:${commit}",
-                        credentials: dockerCredentials
+                sh 'make dockerize'
             }
         }*/
 
         stage('Dockerize') {
-            node(dockerAgent){
+            //bitbucketUtils.notify message: "Dockerize", commit: commit, status: 'progress', credentials: gitCredentials
+            node(dockerAgent) {
                 unstash 'workspace'
-                sh 'make dockerize'
+                dockerUtils.buildAndPush 
+                        image: "${imagePrefix}/${projectName}:${commit}"
             }
         }
 
