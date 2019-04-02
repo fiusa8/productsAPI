@@ -137,22 +137,21 @@ pipeline {
         }*/
 
         stage('Automated Tests') {
-            sh "mvn test"
+            //sh "mvn test"
+            mvnUtils.run goal: 'test'
         }
 
         stage('Build') {
             //bitbucketUtils.notify message: "Build", commit: commit, status: 'progress', credentials: gitCredentials
-            try {
-                sh "mvn clean package"
-                /*artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
-                        //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
-                        //releaseRepo: releaseRepo,
-                        //snapshotRepo: snapshotRepo,
-                        mavenTool: 'maven'*/
-            } catch (Exception e) {
-                //Ignored. Last Jenkins version has a bug that makes the Artifactory publish stage to fail with a exception
-                // when the process works correctly so needs to be captured here while the bug is not solved.
-            }
+
+            //sh "mvn clean package"
+            mvnUtils.run goal: 'clean package'
+            /*artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
+                    //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
+                    //releaseRepo: releaseRepo,
+                    //snapshotRepo: snapshotRepo,
+                    mavenTool: 'maven'*/
+
             stash 'workspace'
         }
 
