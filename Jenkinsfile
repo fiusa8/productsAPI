@@ -184,6 +184,17 @@ pipeline {
             }
         }*/
 
+        stage('Dockerize') {
+            agent { node { dockerAgent } }
+
+            steps{
+                script {
+                    sh 'make dockerize'
+                }
+            }
+
+        }
+
         /*stage('Deploy-k8s') {
             bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
             node(kubectlAgent) {
