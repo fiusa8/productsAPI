@@ -93,39 +93,47 @@ def numToKeepStr = '2'
 }*/
 
 // pipeline
-node(javaAgent) {
-    properties([
-            [$class: 'BuildDiscarderProperty', strategy: [$class: 'LogRotator', artifactDaysToKeepStr: artifactDaysToKeepStr, artifactNumToKeepStr: artifactNumToKeepStr, daysToKeepStr: daysToKeepStr, numToKeepStr: numToKeepStr]],
-            parameters([
-                    booleanParam(
-                            defaultValue: true,
-                            description: 'Do you want to destroy the temporal environment created after all steps completed?',
-                            name: 'destroyEnvironmentAfter'
-                    )
-            ])
-    ])
+pipeline {
+    //agent { node { label "incubation" } }
 
-    try {
-        stage('Checkout') {
+    options { skipDefaultCheckout true }
+
+    stages {
+        stage("Prepare") {
+            steps {
+                script {
+                    fdUtils.loadGlobalLibrary()
+                }
+            }
+        }
+
+        stage("Checkout") {
             steps {
                 script {
                     checkout scm
 
                     branch = env.BRANCH_NAME
                     commit = gitUtils.getCommitId()
-                }
             }
+        }
+
+        /*stage('Checkout') {
+            checkout scm
+
+            branch = env.BRANCH_NAME
+            commit = gitUtils.getCommitId()
             //repo = gitUtils.getOriginUrl()
             /*if (branch == "${mainDevelopBranch}") {
                 simplifiedBranchName = branch
             } else {
                 simplifiedBranchName = gitUtils.getSimplifiedBranchName()
             }*/
+            /*
 
 
             //slackUtils.notify message: "Building ${projectName} - ${branch}...", credentials: slackCredentials, team: slackTeam, channel: slackChannel
             //bitbucketUtils.notify message: "Collect info", commit: commit, status: 'progress', credentials: gitCredentials
-        }
+        }*/
 
         stage('Automated Tests') {
             sh "mvn test"
@@ -235,38 +243,18 @@ node(javaAgent) {
         bitbucketUtils.notify commit: commit, status: 'success', credentials: gitCredentials
         */
 
-    } catch (def e) {
-        /*stage('Roll-back') {
-            node(kubectlAgent) {
-                unstash 'workspace'
-                withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
-                    if (branch != mainDevelopBranch) {
-                        kubectlUtils.completelyRemoveBranchDeployment deploymentName: "${simplifiedBranchName}-${projectName}",
-                                pathToKubeconfigFile: kubeconfigFile,
-                                namespace: k8sNamespace
-                    } else {
-                        def substitutionVariables = [
-                                "DEPLOY_NAME=${simplifiedBranchName}-${projectName}",
-                                "DEPLOY_IMAGE=${dockerRepo}/${imagePrefix}/${projectName}:${developEnvTag}",
-                                "DEPLOY_SERVICE_HOSTNAME=${simplifiedBranchName}.${projectName}.${clusterBaseUrl}",
-                                "K8S_NAMESPACE=${k8sNamespace}",
-                                "EXECUTION_ENVIRONMENT=${kubernetesExecutionEnv}",
-                                "CONFIG_SERVER_URI=${configServer}"
-                        ]
-
-                        kubectlUtils.updateOrCreateK8sDeployment substitutionVariables: substitutionVariables,
-                                k8sDeploymentYaml: k8sDeploymentYaml,
-                                pathToKubeconfigFile: kubeconfigFile,
-                                namespace: k8sNamespace
-                    }
-                }
+    }
+    post {
+        success {
+            script {
+                currentBuild.result = 'SUCCESS'
             }
         }
-        slackUtils.notify message: "Build success!", credentials: slackCredentials, team: slackTeam, channel: slackChannel, level: 'error'
-        bitbucketUtils.notify commit: commit, status: 'error', credentials: gitCredentials
-        */
-        echo e.toString()
-        currentBuild.result = 'FAILURE'
-        
+
+        failure {
+            script {
+                currentBuild.result = 'FAILURE'
+            }
+        }
     }
 }
