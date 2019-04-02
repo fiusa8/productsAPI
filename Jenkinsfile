@@ -114,6 +114,8 @@ pipeline {
 
                     branch = env.BRANCH_NAME
                     commit = gitUtils.getCommitId()
+
+                    stash 'workspace'
                 }
             }
         }
@@ -189,6 +191,7 @@ pipeline {
 
             steps{
                 script {
+                    unstash 'workspace'
                     sh 'make dockerize'
                 }
             }
