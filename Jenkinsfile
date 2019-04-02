@@ -107,7 +107,7 @@ node(javaAgent) {
 
     try {
         stage('Collect info') {
-            checkout slackTeam
+            checkout scm
 
             //branch = env.BRANCH_NAME
             commit = gitUtils.getCommitId()
