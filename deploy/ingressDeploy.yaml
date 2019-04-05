@@ -1,0 +1,11 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  labels:
+    app: springboot
+  name: springboot
+  namespace: default
+spec:
+  backend:
+    serviceName: springboot
+    servicePort: 8443

@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongodb
+  labels:
+    run: mongodb
+spec:
+  ports:
+  - port: 27017
+    targetPort: 27017
+    protocol: TCP
+  selector:
+    run: mongodb
+  type: LoadBalancer
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata: 
+  name: mongodb
+spec:
+  template:
+    metadata:
+      labels:
+        run: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: mongo:4.0.3
+        ports:
+        - containerPort: 27017
