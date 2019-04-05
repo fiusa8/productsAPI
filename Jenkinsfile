@@ -29,8 +29,8 @@ def gitCredentials = ''
 
 // kubernetes config
 //def kubernetesExecutionEnv = 'default' // TODO: Define the execution environment (to load correct properties from config server)
-def k8sDeploymentYaml = "deploy/k8sDeployment.yaml"
-def k8sNamespace = "default" //TODO: Configure project namespace in k8s space
+//def k8sDeploymentYaml = "deploy/k8sDeployment.yaml"
+//def k8sNamespace = "default" //TODO: Configure project namespace in k8s space
 //def k8sCredentials = "kubeconfig" //TODO: Secret ID in Jenkins that contains the k8s kubeconfig file
 //def clusterBaseUrl = ""
 
@@ -154,8 +154,8 @@ pipeline {
             steps{
                 script{
                     unstash 'workspace'
-                    sh 'kubectl apply -f ${k8sDeploymentYaml}'
-                    sh 'kubectl apply -f serviceDeployment.yaml'
+                    sh 'kubectl apply -f deploy/k8sDeployment.yaml'
+                    sh 'kubectl apply -f deploy/serviceDeployment.yaml'
                 }
             }
                 /*withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
