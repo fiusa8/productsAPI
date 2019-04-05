@@ -99,7 +99,7 @@ pipeline {
     options { skipDefaultCheckout true }
 
     stages {
-        stage("Prepare") {
+        /*stage("Prepare") {
             steps {
                 script {
                     fdUtils.loadGlobalLibrary()
@@ -146,11 +146,11 @@ pipeline {
                 }
             }
 
-        }
+        }*/
 
         stage('Deploy-k8s') {
             //bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
-            agent { node { label kubectlAgent } }
+            //agent { node { label kubectlAgent } }
             steps{
                 script{
                     unstash 'workspace'
