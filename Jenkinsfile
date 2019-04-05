@@ -99,7 +99,7 @@ pipeline {
     options { skipDefaultCheckout true }
 
     stages {
-        /*stage("Prepare") {
+        stage("Prepare") {
             steps {
                 script {
                     fdUtils.loadGlobalLibrary()
@@ -119,7 +119,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Automated Tests') {
             steps {
                 script {
