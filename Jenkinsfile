@@ -3,7 +3,7 @@
 // pipeline config
 def javaAgent ='build && java'
 def dockerAgent ='build && docker'
-//def kubectlAgent ='deploy && datacenter && linux'
+def kubectlAgent ='deploy && datacenter && linux'
 //def nodejsAgent ='build && nodejs'
 
 // project config
@@ -28,9 +28,9 @@ def gitCredentials = ''
 //def imagePrefix = 'adidas' //TODO: prefix of your image
 
 // kubernetes config
-//def kubernetesExecutionEnv = 'develop' // TODO: Define the execution environment (to load correct properties from config server)
-//def k8sDeploymentYaml = "deploy/k8sDeployment.yaml"
-//def k8sNamespace = "spring" //TODO: Configure project namespace in k8s space
+//def kubernetesExecutionEnv = 'default' // TODO: Define the execution environment (to load correct properties from config server)
+def k8sDeploymentYaml = "deploy/k8sDeployment.yaml"
+def k8sNamespace = "default" //TODO: Configure project namespace in k8s space
 //def k8sCredentials = "kubeconfig" //TODO: Secret ID in Jenkins that contains the k8s kubeconfig file
 //def clusterBaseUrl = ""
 
@@ -120,26 +120,7 @@ pipeline {
             }
         }
 
-        /*stage('Checkout') {
-            checkout scm
-
-            branch = env.BRANCH_NAME
-            commit = gitUtils.getCommitId()
-            //repo = gitUtils.getOriginUrl()
-            /*if (branch == "${mainDevelopBranch}") {
-                simplifiedBranchName = branch
-            } else {
-                simplifiedBranchName = gitUtils.getSimplifiedBranchName()
-            }*/
-            /*
-
-
-            //slackUtils.notify message: "Building ${projectName} - ${branch}...", credentials: slackCredentials, team: slackTeam, channel: slackChannel
-            //bitbucketUtils.notify message: "Collect info", commit: commit, status: 'progress', credentials: gitCredentials
-        }*/
-
         stage('Automated Tests') {
-            //sh "mvn test"
             steps {
                 script {
                     mvnUtils.run goal: 'test'
@@ -148,43 +129,12 @@ pipeline {
         }
 
         stage('Build') {
-            //bitbucketUtils.notify message: "Build", commit: commit, status: 'progress', credentials: gitCredentials
-
-            //sh "mvn clean package"
-            /*artifactoryUtils.mavenDeploy //credentials: artifactoryCredentials,
-                    //goal: 'clean org.jacoco:jacoco-maven-plugin:prepare-agent test install',
-                    //releaseRepo: releaseRepo,
-                    //snapshotRepo: snapshotRepo,
-                    mavenTool: 'maven'*/
             steps {
                 script {
                     mvnUtils.run goal: 'clean package'
                 }
             }
         }
-
-        /*stage('Sonar') {
-
-           bitbucketUtils.notify message: "Sonar", commit: commit, status: 'progress', credentials: gitCredentials
-           sonar.run version: '1.0', branch: simplifiedBranchName
-
-        }*/
-
-        /*stage('Dockerize') {
-            node(dockerAgent){
-                unstash 'workspace'
-                sh 'make dockerize'
-            }
-        }*/
-
-        /*stage('Dockerize') {
-            //bitbucketUtils.notify message: "Dockerize", commit: commit, status: 'progress', credentials: gitCredentials
-            node(dockerAgent) {
-                unstash 'workspace'
-                dockerUtils.buildAndPush 
-                        image: "${imagePrefix}/${projectName}:${commit}"
-            }
-        }*/
 
         stage('Dockerize') {
             agent { node { label dockerAgent } }
@@ -198,70 +148,34 @@ pipeline {
 
         }
 
-        /*stage('Deploy-k8s') {
-            bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
+        stage('Deploy-k8s') {
+            //bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
             node(kubectlAgent) {
                 unstash 'workspace'
-                withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
+                sh 'kubectl apply -f ${k8sDeploymentYaml}'
+                sh 'kubectl apply -f serviceDeployment.yaml'
+                /*withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
                 clusterBaseUrl = sh script: "kubectl --kubeconfig ${kubeconfigFile} config view --minify -o jsonpath='{.clusters[0].cluster.server}'", returnStdout: true
                 clusterBaseUrl = clusterBaseUrl.replaceAll("https://api\\.", "")
                  echo "${clusterBaseUrl}"
                  def substitutionVariables = [
-                            "DEPLOY_NAME=${simplifiedBranchName}-${projectName}",
-                            "DEPLOY_IMAGE=${dockerRepo}/${imagePrefix}/${projectName}:${commit}",
-                            "DEPLOY_SERVICE_HOSTNAME=${simplifiedBranchName}.${projectName}.${clusterBaseUrl}",
+                            "DEPLOY_NAME=${projectName}",
+                            //"DEPLOY_IMAGE=${dockerRepo}/${imagePrefix}/${projectName}:${commit}",
+                            //"DEPLOY_SERVICE_HOSTNAME=${simplifiedBranchName}.${projectName}.${clusterBaseUrl}",
                             "K8S_NAMESPACE=${k8sNamespace}",
                             "EXECUTION_ENVIRONMENT=${kubernetesExecutionEnv}",
                             "CONFIG_SERVER_URI=${configServer}"
                     ]
 
-                    kubectlUtils.updateOrCreateK8sDeployment substitutionVariables: substitutionVariables,
+                    kubectlUtils.updateOrCreateK8sDeployment
                             k8sDeploymentYaml: k8sDeploymentYaml,
                             pathToKubeconfigFile: kubeconfigFile,
                             namespace: k8sNamespace
-                }
+                            
+                }*/
             }
-        }*/
-
-        /*stage("API Validation") {
-            //TODO: Placeholder for the API validation step
-            echo "Placeholder for the API validation step"
-        }*/
-
-        
-
-        //If the test has been successful we will re-tag the image as :develop
-        /*if (branch == mainDevelopBranch) {
-            stage("Promote image") {
-                //bitbucketUtils.notify message: "Promoting image to :develop", commit: commit, status: 'progress', credentials: gitCredentials
-                node(dockerAgent) {
-                    dockerUtils.retagImageAndPush repo: dockerRepo,
-                            originalImage: "${imagePrefix}/${projectName}:${commit}",
-                            newImage: "${imagePrefix}/${projectName}:${developEnvTag}",
-                            credentials: dockerCredentials
-                }
-            }
-        }*/
-
-        /*if (params.destroyEnvironmentAfter && (branch != "${mainDevelopBranch}")) {
-            stage('Undeploy-k8s') {
-                node(kubectlAgent) {
-                    withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
-                        kubectlUtils.completelyRemoveBranchDeployment deploymentName: "${simplifiedBranchName}-${projectName}",
-                                pathToKubeconfigFile: kubeconfigFile,
-                                namespace: k8sNamespace
-                    }
-                }
-            }
-            slackUtils.notify message: "Build success!", credentials: slackCredentials, team: slackTeam, channel: slackChannel
-        } else {
-            echo("Build success! - Service available in http://${simplifiedBranchName}-${projectName}/swagger-ui.html")
-            slackUtils.notify message: "Build success! - Service available in http://${simplifiedBranchName}-${projectName}.${clusterBaseUrl}/swagger-ui.html",
-                    credentials: slackCredentials, team: slackTeam, channel: slackChannel
         }
 
-        bitbucketUtils.notify commit: commit, status: 'success', credentials: gitCredentials
-        */
 
     }
     post {
