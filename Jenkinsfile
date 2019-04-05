@@ -150,10 +150,14 @@ pipeline {
 
         stage('Deploy-k8s') {
             //bitbucketUtils.notify message: "Deploy-k8s", commit: commit, status: 'progress', credentials: gitCredentials
-            node(kubectlAgent) {
-                unstash 'workspace'
-                sh 'kubectl apply -f ${k8sDeploymentYaml}'
-                sh 'kubectl apply -f serviceDeployment.yaml'
+            agent { node { label kubectlAgent } }
+            steps{
+                script{
+                    unstash 'workspace'
+                    sh 'kubectl apply -f ${k8sDeploymentYaml}'
+                    sh 'kubectl apply -f serviceDeployment.yaml'
+                }
+            }
                 /*withCredentials([file(credentialsId: k8sCredentials, variable: 'kubeconfigFile')]) {
                 clusterBaseUrl = sh script: "kubectl --kubeconfig ${kubeconfigFile} config view --minify -o jsonpath='{.clusters[0].cluster.server}'", returnStdout: true
                 clusterBaseUrl = clusterBaseUrl.replaceAll("https://api\\.", "")
@@ -173,7 +177,6 @@ pipeline {
                             namespace: k8sNamespace
                             
                 }*/
-            }
         }
 
 
